@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Encryption</title>
+    <link rel="stylesheet" href="/static/chat.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+    <div id="chat">
+        <h1>Chat Encryption</h1>
+        <textarea id="inputMessage" placeholder="Enter your message" rows="4"></textarea>
+        <input type="text" id="key" placeholder="Enter secret key">
+        <button onclick="encryptMessage()">Encrypt</button>
+        <button onclick="decryptMessage()">Decrypt</button>
+        <h2>Output:</h2>
+        <textarea id="outputMessage" readonly rows="4"></textarea>
+        <p id="notification" class="notification"></p>
+        <p id="errorMessage" class="error"></p>
+    </div>
+
+    <script src="/static/script.js"></script>
+    <script>
+        // Обработка нажатия клавиши Enter
+        document.getElementById('inputMessage').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Предотвращаем создание новой строки
+                encryptMessage(); // Вызываем функцию шифрования
+            }
+        });
+
+        function clearMessages() {
+            document.getElementById('notification').innerText = '';
+            document.getElementById('errorMessage').innerText = '';
+        }
+
+        function encryptMessage() {
+            clearMessages();
+            const message = document.getElementById('inputMessage').value.trim();
+            const key = parseInt(document.getElementById('key').value);
+
+            if (!message || isNaN(key)) {
+                document.getElementById('errorMessage').innerText = 'Please enter a valid message and key.';
+                return;
+            }
+
+            let encrypted = '';
+            for (let i = 0; i < message.length; i++) {
+                encrypted += String.fromCharCode(message.charCodeAt(i) + key);
+            }
+
+            document.getElementById('outputMessage').value = encrypted;
+            document.getElementById('notification').innerText = 'Message encrypted successfully!';
+        }
+
+        function decryptMessage() {
+            clearMessages();
+            const message = document.getElementById('inputMessage').value.trim();
+            const key = parseInt(document.getElementById('key').value);
+
+            if (!message || isNaN(key)) {
+                document.getElementById('errorMessage').innerText = 'Please enter a valid message and key.';
+                return;
+            }
+
+            let decrypted = '';
+            for (let i = 0; i < message.length; i++) {
+                decrypted += String.fromCharCode(message.charCodeAt(i) - key);
+            }
+
+            document.getElementById('outputMessage').value = decrypted;
+            document.getElementById('notification').innerText = 'Message decrypted successfully!';
+        }
+    </script>
+</body>
+</html>
